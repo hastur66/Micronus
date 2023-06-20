@@ -1,5 +1,5 @@
 from numpy import random
-from encoder import Encoder
+from micronus.encoder import Encoder
  
 enc_vocab_size = 20 # Vocabulary size for the encoder
 input_seq_length = 5  # Maximum length of the input sequence

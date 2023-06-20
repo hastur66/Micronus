@@ -1,6 +1,6 @@
 
 from numpy import random
-from decoder import Decoder
+from micronus.decoder import Decoder
 
 dec_vocab_size = 20  # Vocabulary size for the decoder
 input_seq_length = 5  # Maximum length of the input sequence

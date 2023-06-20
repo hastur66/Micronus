@@ -1,7 +1,7 @@
 from tensorflow.keras.layers.experimental.preprocessing import TextVectorization
 from tensorflow import convert_to_tensor, string
 from tensorflow.data import Dataset
-from positional_encoding import PositionEmbeddingFixedWeights
+from micronus.positional_encoding import PositionEmbeddingFixedWeights
 
 output_sequence_length = 5
 vocab_size = 10

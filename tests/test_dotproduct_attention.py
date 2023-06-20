@@ -1,6 +1,6 @@
 from numpy import random
 import pytest
-from dotproduct_attention import DotProductAttention
+from micronus.dotproduct_attention import DotProductAttention
 
 d_k = 64
 d_v = 64

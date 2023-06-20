@@ -1,5 +1,5 @@
-from encoder import Encoder, EncoderLayer
-from decoder import Decoder, DecoderLayer
+from micronus.encoder import Encoder, EncoderLayer
+from micronus.decoder import Decoder, DecoderLayer
 from tensorflow import math, cast, float32, linalg, ones, maximum, newaxis
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Dense

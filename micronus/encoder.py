@@ -1,7 +1,7 @@
 from tensorflow.keras.layers import LayerNormalization, Layer, Dense, ReLU, Dropout, Input
 from tensorflow.keras.models import Model
-from multihead_attention import MultiHeadAttention
-from positional_encoding import PositionEmbeddingFixedWeights
+from micronus.multihead_attention import MultiHeadAttention
+from micronus.positional_encoding import PositionEmbeddingFixedWeights
 
 class AddNormalization(Layer):
     def __init__(self, **kwargs):
