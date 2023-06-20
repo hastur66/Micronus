@@ -1,8 +1,8 @@
 from tensorflow.keras.layers import Layer, Dropout, Input
 from tensorflow.keras.models import Model
-from multihead_attention import MultiHeadAttention
-from positional_encoding import PositionEmbeddingFixedWeights
-from encoder import AddNormalization, FeedForward
+from micronus.multihead_attention import MultiHeadAttention
+from micronus.positional_encoding import PositionEmbeddingFixedWeights
+from micronus.encoder import AddNormalization, FeedForward
  
 
 class DecoderLayer(Layer):

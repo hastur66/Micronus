@@ -1,6 +1,6 @@
 from numpy import random
 import pytest
-from multihead_attention import MultiHeadAttention
+from micronus.multihead_attention import MultiHeadAttention
 
 input_seq_length = 5  # Maximum length of the input sequence
 h = 8  # Number of self-attention heads

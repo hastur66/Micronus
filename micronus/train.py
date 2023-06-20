@@ -4,7 +4,7 @@ from tensorflow.keras.optimizers.schedules import LearningRateSchedule
 from tensorflow.keras.metrics import Mean
 from tensorflow import data, train, math, reduce_sum, cast, equal, argmax, float32, GradientTape, function
 from keras.losses import sparse_categorical_crossentropy
-from model import TransformerModel
+from micronus.transformer_model import TransformerModel
 from prepare_dataset import PrepareDataset
 from time import time
 from pickle import dump
