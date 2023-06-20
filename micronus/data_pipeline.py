@@ -1,4 +1,3 @@
-Python
 from pickle import load, dump, HIGHEST_PROTOCOL
 from numpy.random import shuffle
 from numpy import savetxt
