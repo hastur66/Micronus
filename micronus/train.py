@@ -5,7 +5,7 @@ from tensorflow.keras.metrics import Mean
 from tensorflow import data, train, math, reduce_sum, cast, equal, argmax, float32, GradientTape, function
 from keras.losses import sparse_categorical_crossentropy
 from micronus.transformer_model import TransformerModel
-from prepare_dataset import PrepareDataset
+from micronus.data_pipeline import PrepareDataset
 from time import time
 from pickle import dump
  
@@ -26,6 +26,7 @@ beta_2 = 0.98
 epsilon = 1e-9
 dropout_rate = 0.1
  
+DATASET='english-german.pkl'
  
 # Implementing a learning rate scheduler
 class LRScheduler(LearningRateSchedule):
@@ -48,19 +49,25 @@ class LRScheduler(LearningRateSchedule):
 optimizer = Adam(LRScheduler(d_model), beta_1, beta_2, epsilon)
  
 # Prepare the training dataset
-dataset = PrepareDataset()
-trainX, trainY, valX, valY, train_orig, val_orig, enc_seq_length, dec_seq_length, enc_vocab_size, dec_vocab_size = dataset('english-german.pkl')
- 
-print(enc_seq_length, dec_seq_length, enc_vocab_size, dec_vocab_size)
- 
-# Prepare the training dataset batches
-train_dataset = data.Dataset.from_tensor_slices((trainX, trainY))
-train_dataset = train_dataset.batch(batch_size)
- 
-# Prepare the validation dataset batches
-val_dataset = data.Dataset.from_tensor_slices((valX, valY))
-val_dataset = val_dataset.batch(batch_size)
- 
+def data_process(DATASET):
+    dataset = PrepareDataset()
+    trainX, trainY, valX, valY, train_orig, val_orig, enc_seq_length, dec_seq_length, enc_vocab_size, dec_vocab_size = dataset(DATASET)
+    
+    print(enc_seq_length, dec_seq_length, enc_vocab_size, dec_vocab_size)
+
+    # Prepare the training dataset batches
+    train_dataset = data.Dataset.from_tensor_slices((trainX, trainY))
+    train_dataset = train_dataset.batch(batch_size)
+    
+    # Prepare the validation dataset batches
+    val_dataset = data.Dataset.from_tensor_slices((valX, valY))
+    val_dataset = val_dataset.batch(batch_size)
+
+
+    return trainX, trainY, valX, valY, train_orig, val_orig, enc_seq_length, dec_seq_length, enc_vocab_size, dec_vocab_size, train_dataset, val_dataset
+
+trainX, trainY, valX, valY, train_orig, val_orig, enc_seq_length, dec_seq_length, enc_vocab_size, dec_vocab_size, train_dataset, val_dataset = data_process(DATASET)
+
 # Create model
 training_model = TransformerModel(enc_vocab_size, dec_vocab_size, enc_seq_length, dec_seq_length, h, d_k, d_v, d_model, d_ff, n, dropout_rate)
  
