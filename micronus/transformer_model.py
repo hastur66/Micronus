@@ -6,6 +6,7 @@ from tensorflow.keras.layers import Dense
  
  
 class TransformerModel(Model):
+    """ """
     def __init__(self, enc_vocab_size, dec_vocab_size, enc_seq_length, dec_seq_length, h, d_k, d_v, d_model, d_ff_inner, n, rate, **kwargs):
         super(TransformerModel, self).__init__(**kwargs)
 
@@ -22,6 +23,17 @@ class TransformerModel(Model):
         self.model_last_layer = Dense(dec_vocab_size)
  
     def padding_mask(self, input):
+        """
+
+        Parameters
+        ----------
+        input :
+            
+
+        Returns
+        -------
+
+        """
         # Create mask which marks the zero padding values in the input by a 1.0
         mask = math.equal(input, 0)
         mask = cast(mask, float32)
@@ -31,18 +43,45 @@ class TransformerModel(Model):
         return mask[:, newaxis, newaxis, :]
  
     def lookahead_mask(self, shape):
+        """
+
+        Parameters
+        ----------
+        shape :
+            
+
+        Returns
+        -------
+
+        """
         # Mask out future entries by marking them with a 1.0
         mask = 1 - linalg.band_part(ones((shape, shape)), -1, 0)
  
         return mask
     
     def model_summary(self):
+        """ """
         # Show model summary
         encoder_summary = self.encoder_layer.build_graph().summary()
         decoder_summary = self.decoder_layer.build_graph().summary()
         return encoder_summary, decoder_summary
  
     def call(self, encoder_input, decoder_input, training):
+        """
+
+        Parameters
+        ----------
+        encoder_input :
+            
+        decoder_input :
+            
+        training :
+            
+
+        Returns
+        -------
+
+        """
  
         # Create padding mask to mask the encoder inputs and the encoder outputs in the decoder
         enc_padding_mask = self.padding_mask(encoder_input)

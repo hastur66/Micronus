@@ -30,6 +30,7 @@ DATASET='english-german.pkl'
  
 # Implementing a learning rate scheduler
 class LRScheduler(LearningRateSchedule):
+    """ """
     def __init__(self, d_model, warmup_steps=4000, **kwargs):
         super(LRScheduler, self).__init__(**kwargs)
  
@@ -50,6 +51,17 @@ optimizer = Adam(LRScheduler(d_model), beta_1, beta_2, epsilon)
  
 # Prepare the training dataset
 def data_process(DATASET):
+    """
+
+    Parameters
+    ----------
+    DATASET :
+        
+
+    Returns
+    -------
+
+    """
     dataset = PrepareDataset()
     trainX, trainY, valX, valY, train_orig, val_orig, enc_seq_length, dec_seq_length, enc_vocab_size, dec_vocab_size = dataset(DATASET)
     
@@ -74,6 +86,19 @@ training_model = TransformerModel(enc_vocab_size, dec_vocab_size, enc_seq_length
  
 # Defining the loss function
 def loss_fcn(target, prediction):
+    """
+
+    Parameters
+    ----------
+    target :
+        
+    prediction :
+        
+
+    Returns
+    -------
+
+    """
     # Create mask so that the zero padding values are not included in the computation of loss
     padding_mask = math.logical_not(equal(target, 0))
     padding_mask = cast(padding_mask, float32)
@@ -87,6 +112,19 @@ def loss_fcn(target, prediction):
  
 # Defining the accuracy function
 def accuracy_fcn(target, prediction):
+    """
+
+    Parameters
+    ----------
+    target :
+        
+    prediction :
+        
+
+    Returns
+    -------
+
+    """
     # Create mask so that the zero padding values are not included in the computation of accuracy
     padding_mask = math.logical_not(equal(target, 0))
  
@@ -118,6 +156,21 @@ val_loss_dict = {}
 # Speeding up the training process
 @function
 def train_step(encoder_input, decoder_input, decoder_output):
+    """
+
+    Parameters
+    ----------
+    encoder_input :
+        
+    decoder_input :
+        
+    decoder_output :
+        
+
+    Returns
+    -------
+
+    """
     with GradientTape() as tape:
  
         # Run the forward pass of the model to generate a prediction

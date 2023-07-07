@@ -23,11 +23,23 @@ inferencing_model = TransformerModel(enc_vocab_size, dec_vocab_size, enc_seq_len
 
 
 class Infer(Module):
+    """ """
     def __init__(self, inferencing_model, **kwargs):
         super(Infer, self).__init__(**kwargs)
         self.transformer = inferencing_model
  
     def load_tokenizer(self, name):
+        """
+
+        Parameters
+        ----------
+        name :
+            
+
+        Returns
+        -------
+
+        """
         with open(name, 'rb') as handle:
             return load(handle)
  

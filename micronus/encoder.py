@@ -4,16 +4,31 @@ from micronus.multihead_attention import MultiHeadAttention
 from micronus.positional_encoding import PositionEmbeddingFixedWeights
 
 class AddNormalization(Layer):
+    """ """
     def __init__(self, **kwargs):
         super(AddNormalization, self).__init__(**kwargs)
         self.layer_norm = LayerNormalization()
 
     def call(self, x, sublayer_x):
+        """
+
+        Parameters
+        ----------
+        x :
+            
+        sublayer_x :
+            
+
+        Returns
+        -------
+
+        """
         add = x + sublayer_x
 
         return self.layer_norm(add)
 
 class FeedForward(Layer):
+    """ """
     def __init__(self, d_ff, d_model, **kwargs):
         super(FeedForward, self).__init__(**kwargs)
         self.fully_connected1 = Dense(d_ff)  
@@ -21,12 +36,24 @@ class FeedForward(Layer):
         self.activation = ReLU()
 
     def call(self, x):
+        """
+
+        Parameters
+        ----------
+        x :
+            
+
+        Returns
+        -------
+
+        """
         x_fc1 = self.fully_connected1(x)
 
         return self.fully_connected2(self.activation(x_fc1))
 
 
 class EncoderLayer(Layer):
+    """ """
     def __init__(self, sequence_length, h, d_k, d_v, d_model, d_ff, rate, **kwargs):
         super(EncoderLayer, self).__init__(**kwargs)
         self.build(input_shape=[None, sequence_length, d_model])
@@ -40,10 +67,26 @@ class EncoderLayer(Layer):
         self.add_norm2 = AddNormalization()
 
     def build_graph(self):
+        """ """
         input_layer = Input(shape=(self.sequence_length, self.d_model))
         return Model(inputs=[input_layer], outputs=self.call(input_layer, None, True))
 
     def call(self, x, padding_mask, training):
+        """
+
+        Parameters
+        ----------
+        x :
+            
+        padding_mask :
+            
+        training :
+            
+
+        Returns
+        -------
+
+        """
         multihead_output = self.multihead_attention(x, x, x, padding_mask)
 
         multihead_output = self.dropout1(multihead_output, training=training)
@@ -57,6 +100,7 @@ class EncoderLayer(Layer):
 
 
 class Encoder(Layer):
+    """ """
     def __init__(self, vocab_size, sequence_length, h, d_k, d_v, d_model, d_ff, n, rate, **kwargs):
         super(Encoder, self).__init__(**kwargs)
         self.pos_encoding = PositionEmbeddingFixedWeights(sequence_length, vocab_size, d_model)
@@ -64,6 +108,21 @@ class Encoder(Layer):
         self.encoder_layer = [EncoderLayer(sequence_length,h, d_k, d_v, d_model, d_ff, rate) for _ in range(n)]
 
     def call(self, input_sentence, padding_mask, training):
+        """
+
+        Parameters
+        ----------
+        input_sentence :
+            
+        padding_mask :
+            
+        training :
+            
+
+        Returns
+        -------
+
+        """
         pos_encoding_output = self.pos_encoding(input_sentence)
 
         x = self.dropout(pos_encoding_output, training=training)

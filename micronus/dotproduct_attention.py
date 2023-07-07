@@ -9,7 +9,25 @@ class DotProductAttention(Layer):
         super(DotProductAttention, self).__init__(**kwargs)
 
     def call(self, queries, keys, values, d_k, mask=None):
-        """method for scaled dot product attention"""
+        """method for scaled dot product attention
+
+        Parameters
+        ----------
+        queries :
+            
+        keys :
+            
+        values :
+            
+        d_k :
+            
+        mask :
+             (Default value = None)
+
+        Returns
+        -------
+
+        """
 
         scores = matmul(queries, keys, transpose_b=True) / math.sqrt(cast(d_k, float32))
 
