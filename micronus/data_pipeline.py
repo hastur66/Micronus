@@ -19,11 +19,13 @@ class PrepareDataset:
 
         Parameters
         ----------
-        dataset :
+        dataset : str or file
+            filename of dataset
             
-
         Returns
         -------
+        output : 
+            tokenized dataset
 
         """
         tokenizer = Tokenizer()
@@ -36,11 +38,14 @@ class PrepareDataset:
 
         Parameters
         ----------
-        dataset :
+        dataset : 
+            filename of dataset
             
 
         Returns
         -------
+        output : 
+            maximum sequence length in dataset
 
         """
         return max(len(seq.split()) for seq in dataset)
@@ -50,13 +55,17 @@ class PrepareDataset:
 
         Parameters
         ----------
-        tokenizer :
+        tokenizer : 
+            tokenizer object
             
         dataset :
+            filename of dataset
             
 
         Returns
         -------
+        output : 
+            vocabulary size
 
         """
         tokenizer.fit_on_texts(dataset)
@@ -70,14 +79,18 @@ class PrepareDataset:
         Parameters
         ----------
         dataset :
+            filename of dataset
             
         tokenizer :
-            
+            tokenizer object
+        
         seq_length :
-            
+            maximum sequence length in dataset
 
         Returns
         -------
+        output : 
+            encoded and padded dataset
 
         """
         x = tokenizer.texts_to_sequences(dataset)
@@ -92,12 +105,15 @@ class PrepareDataset:
         Parameters
         ----------
         tokenizer :
+            tokenizer object
             
         name :
-            
+            tokenizer name
 
         Returns
         -------
+        output : 
+            save tokenizer object to file
 
         """
         with open(name + '_tokenizer.pkl', 'wb') as handle:
