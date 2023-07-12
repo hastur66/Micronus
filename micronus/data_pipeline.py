@@ -6,7 +6,8 @@ from keras.preprocessing.sequence import pad_sequences
 from tensorflow import convert_to_tensor, int64
  
 class PrepareDataset:
-    """ """
+    """ Prepares the dataset for training and testing """
+    
     def __init__(self, **kwargs):
         super(PrepareDataset, self).__init__(**kwargs)
         self.n_sentences = 15000  # Number of sentences to include in the dataset
