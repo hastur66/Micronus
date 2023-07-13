@@ -4,7 +4,8 @@ from micronus.multihead_attention import MultiHeadAttention
 from micronus.positional_encoding import PositionEmbeddingFixedWeights
 
 class AddNormalization(Layer):
-    """ """
+    """ Initializing the normalization layer"""
+
     def __init__(self, **kwargs):
         super(AddNormalization, self).__init__(**kwargs)
         self.layer_norm = LayerNormalization()
@@ -15,12 +16,15 @@ class AddNormalization(Layer):
         Parameters
         ----------
         x :
+            sublayer input
             
         sublayer_x :
-            
+            sublayer output
 
         Returns
         -------
+        output :
+            normalized sum
 
         """
         add = x + sublayer_x
@@ -28,7 +32,8 @@ class AddNormalization(Layer):
         return self.layer_norm(add)
 
 class FeedForward(Layer):
-    """ """
+    """ Initializing the fully connected feed forward layer """
+
     def __init__(self, d_ff, d_model, **kwargs):
         super(FeedForward, self).__init__(**kwargs)
         self.fully_connected1 = Dense(d_ff)  
@@ -41,10 +46,13 @@ class FeedForward(Layer):
         Parameters
         ----------
         x :
+            input from previous layer
             
 
         Returns
         -------
+        output:
+            output from fully connected feed forward layer with ReLU
 
         """
         x_fc1 = self.fully_connected1(x)
@@ -53,7 +61,8 @@ class FeedForward(Layer):
 
 
 class EncoderLayer(Layer):
-    """ """
+    """ Define Encoder layer """
+
     def __init__(self, sequence_length, h, d_k, d_v, d_model, d_ff, rate, **kwargs):
         super(EncoderLayer, self).__init__(**kwargs)
         self.build(input_shape=[None, sequence_length, d_model])
@@ -67,7 +76,7 @@ class EncoderLayer(Layer):
         self.add_norm2 = AddNormalization()
 
     def build_graph(self):
-        """ """
+        """ Build Encoder layer graph """
         input_layer = Input(shape=(self.sequence_length, self.d_model))
         return Model(inputs=[input_layer], outputs=self.call(input_layer, None, True))
 
@@ -77,14 +86,18 @@ class EncoderLayer(Layer):
         Parameters
         ----------
         x :
+            input data
             
         padding_mask :
+            padding condition
             
-        training :
-            
+        training : 
+            apply the Dropout layers
 
         Returns
         -------
+        output:
+            encoder layer output
 
         """
         multihead_output = self.multihead_attention(x, x, x, padding_mask)
@@ -100,7 +113,8 @@ class EncoderLayer(Layer):
 
 
 class Encoder(Layer):
-    """ """
+    """ Define Encoder block """
+
     def __init__(self, vocab_size, sequence_length, h, d_k, d_v, d_model, d_ff, n, rate, **kwargs):
         super(Encoder, self).__init__(**kwargs)
         self.pos_encoding = PositionEmbeddingFixedWeights(sequence_length, vocab_size, d_model)
@@ -113,14 +127,19 @@ class Encoder(Layer):
         Parameters
         ----------
         input_sentence :
+            tokenized input
             
         padding_mask :
+            suppress the zero padding
             
         training :
+            apply the Dropout layers
             
 
         Returns
         -------
+        output:
+            encoder block output
 
         """
         pos_encoding_output = self.pos_encoding(input_sentence)

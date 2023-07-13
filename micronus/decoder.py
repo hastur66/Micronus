@@ -6,7 +6,7 @@ from micronus.encoder import AddNormalization, FeedForward
  
 
 class DecoderLayer(Layer):
-    """ """
+    """ Define Decoder layer """
     def __init__(self, sequence_length, h, d_k, d_v, d_model, d_ff, rate, **kwargs):
         super(DecoderLayer, self).__init__(**kwargs)
         self.build(input_shape=[None, sequence_length, d_model])
@@ -23,7 +23,7 @@ class DecoderLayer(Layer):
         self.add_norm3 = AddNormalization()
  
     def build_graph(self):
-        """ """
+        """ Build Decoder layer graph """
         input_layer = Input(shape=(self.sequence_length, self.d_model))
         return Model(inputs=[input_layer], outputs=self.call(input_layer, None, True))
     
@@ -32,19 +32,26 @@ class DecoderLayer(Layer):
 
         Parameters
         ----------
-        x :
+        x : int
+            number of self-attention heads
             
         encoder_output :
+            encoder output
             
         lookahead_mask :
-            
+            masking condition
+
         padding_mask :
+            padding condition
             
         training :
+            apply the Dropout layers
             
 
         Returns
         -------
+        output:
+            decoder layer output
 
         """
         multihead_output1 = self.multihead_attention1(x, x, x, lookahead_mask)
@@ -62,12 +69,13 @@ class DecoderLayer(Layer):
  
 
 class Decoder(Layer):
-    """ """
+    """ Define Decoder block """
+
     def __init__(self, vocab_size, sequence_length, h, d_k, d_v, d_model, d_ff, n, rate, **kwargs):
         super(Decoder, self).__init__(**kwargs)
         self.pos_encoding = PositionEmbeddingFixedWeights(sequence_length, vocab_size, d_model)
         self.dropout = Dropout(rate)
-        self.decoder_layer = [DecoderLayer(sequence_length,h, d_k, d_v, d_model, d_ff, rate) for _ in range(n)]
+        self.decoder_layer = [DecoderLayer(sequence_length, h, d_k, d_v, d_model, d_ff, rate) for _ in range(n)]
  
     def call(self, output_target, encoder_output, lookahead_mask, padding_mask, training):
         """
@@ -75,18 +83,25 @@ class Decoder(Layer):
         Parameters
         ----------
         output_target :
+            target output
             
         encoder_output :
+            encoder output
             
         lookahead_mask :
-            
+            masking condition
+
         padding_mask :
+            padding condition
             
         training :
+            apply the Dropout layers
             
 
         Returns
         -------
+        output :
+            decoder block output
 
         """
         pos_encoding_output = self.pos_encoding(output_target)

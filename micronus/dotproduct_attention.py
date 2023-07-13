@@ -14,18 +14,24 @@ class DotProductAttention(Layer):
         Parameters
         ----------
         queries :
+            query vector
             
         keys :
+            key vector
             
         values :
+            values vector
             
-        d_k :
+        d_k : int
+            dimensionality of the linearly projected queries and keys
             
         mask :
              (Default value = None)
 
         Returns
         -------
+        outputs :
+            scaled dot product attention outputs            
 
         """
 
