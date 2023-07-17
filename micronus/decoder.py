@@ -33,25 +33,24 @@ class DecoderLayer(Layer):
         Parameters
         ----------
         x : int
-            number of self-attention heads
-            
+        Number of self-attention heads.
+
         encoder_output :
-            encoder output
-            
+            Output from the encoder.
+    
         lookahead_mask :
-            masking condition
+            Masking condition for the self-attention layer.
 
         padding_mask :
-            padding condition
-            
+            Padding condition for the encoder output.
+
         training :
-            apply the Dropout layers
-            
+            Flag indicating whether to apply Dropout layers during training.
 
         Returns
         -------
         output:
-            decoder layer output
+            Decoder layer output.
 
         """
         multihead_output1 = self.multihead_attention1(x, x, x, lookahead_mask)
