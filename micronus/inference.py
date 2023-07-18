@@ -23,7 +23,7 @@ inferencing_model = TransformerModel(enc_vocab_size, dec_vocab_size, enc_seq_len
 
 
 class Infer(Module):
-    """ """
+    """ Class for performing inference """
     def __init__(self, inferencing_model, **kwargs):
         super(Infer, self).__init__(**kwargs)
         self.transformer = inferencing_model
@@ -33,11 +33,14 @@ class Infer(Module):
 
         Parameters
         ----------
-        name :
-            
+        name : str
+            Name of the tokenizer file to load. 
+            The file should be saved using the `save_tokenizer` method.             
 
         Returns
         -------
+        tokenizer : Tokenizer
+            Tokenizer object. 
 
         """
         with open(name, 'rb') as handle:

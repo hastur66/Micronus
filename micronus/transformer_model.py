@@ -6,7 +6,7 @@ from tensorflow.keras.layers import Dense
  
  
 class TransformerModel(Model):
-    """ """
+    """ Initialize the Transformer model. """
     def __init__(self, enc_vocab_size, dec_vocab_size, enc_seq_length, dec_seq_length, h, d_k, d_v, d_model, d_ff_inner, n, rate, **kwargs):
         super(TransformerModel, self).__init__(**kwargs)
 
@@ -27,12 +27,13 @@ class TransformerModel(Model):
 
         Parameters
         ----------
-        input :
-            
+        input : tf.Tensor
+            Input tensor.
 
         Returns
         -------
-
+        output : tf.Tensor
+            Padding mask tensor
         """
         # Create mask which marks the zero padding values in the input by a 1.0
         mask = math.equal(input, 0)
@@ -47,11 +48,39 @@ class TransformerModel(Model):
 
         Parameters
         ----------
-        shape :
-            
+        shape : tuple
+            Shape of the lookahead mask.
+            e.g. (batch_size, sequence_length)
 
         Returns
         -------
+        output : tf.Tensor
+            Lookahead mask tensor.
+        
+        Notes
+        -----
+        The lookahead mask is used to mask the future values in the decoder.
+        This is used to avoid the model to predict the future values.
+        
+        Examples
+        --------
+        >>> lookahead_mask(shape=(2, 3))
+        array([[1., 0., 0.],
+               [1., 1., 0.]], dtype=float32)
+        
+        >>> lookahead_mask(shape=(3, 3))
+        array([[1., 0., 0.],
+               [1., 1., 0.],
+               [1., 1., 1.]], dtype=float32)
+        
+        >>> lookahead_mask(shape=(4, 4))
+        array([[1., 0., 0., 0.],
+               [1., 1., 0., 0.],
+               [1., 1., 1., 0.],
+               [1., 1., 1., 1.]], dtype=float32)
+        
+        >>> lookahead_mask(shape=(5, 5))
+        array([[1., 0., 0., 0., 0.],
 
         """
         # Mask out future entries by marking them with a 1.0
@@ -60,7 +89,34 @@ class TransformerModel(Model):
         return mask
     
     def model_summary(self):
-        """ """
+        """ Show model summary.
+
+        Returns
+        -------
+        encoder_summary : tf.Tensor
+            Encoder summary.
+            
+        decoder_summary : tf.Tensor
+            Decoder summary.
+        
+        Notes
+        -----
+        The encoder summary shows the number of parameters in the encoder.
+        The decoder summary shows the number of parameters in the decoder.
+        
+        Examples
+        --------
+        >>> model_summary()
+        Encoder summary:
+        Total params: 4,924
+        Trainable params: 4,924
+        Non-trainable params: 0
+        Decoder summary:
+        Total params: 4,924
+        Trainable params: 4,924
+        Non-trainable params: 0
+        
+        """
         # Show model summary
         encoder_summary = self.encoder_layer.build_graph().summary()
         decoder_summary = self.decoder_layer.build_graph().summary()
@@ -71,15 +127,37 @@ class TransformerModel(Model):
 
         Parameters
         ----------
-        encoder_input :
+        encoder_input : tf.Tensor
+            Input tensor for the encoder
             
-        decoder_input :
+        decoder_input : tf.Tensor
+            Input tensor for the decoder
             
-        training :
+        training : bool
+            Whether the model is in training mode or not.
+            This is used to determine whether to use the lookahead mask or not.
+            
+        Notes
+        -----
+        The lookahead mask is used to mask the future values in the decoder.
+        This is used to avoid the model to predict the future values.
+        
+        Examples
+        --------
+        >>> call(encoder_input=tf.constant([[1, 2, 3, 4, 5]]),
+        ...      decoder_input=tf.constant([[1, 2, 3, 4, 5]]),
+        ...      training=False)
+        array([[0.0, 0.0, 0.0, 0.0, 0.0],
+               [0.0, 0.0, 0.0, 0.0, 0.0],
+               [0.0, 0.0, 0.0, 0.0, 0.0],
+               [0.0, 0.0, 0.0, 0.0, 0.0],
+               [0.0, 0.0, 0.0, 0.0, 0.0]], dtype=float32)
             
 
         Returns
         -------
+        output : tf.Tensor
+            Output tensor of the transformer model.
 
         """
  

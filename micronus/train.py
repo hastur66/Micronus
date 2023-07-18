@@ -30,7 +30,8 @@ DATASET='english-german.pkl'
  
 # Implementing a learning rate scheduler
 class LRScheduler(LearningRateSchedule):
-    """ """
+    """ Learning rate scheduler for Transformer """
+
     def __init__(self, d_model, warmup_steps=4000, **kwargs):
         super(LRScheduler, self).__init__(**kwargs)
  
@@ -55,11 +56,36 @@ def data_process(DATASET):
 
     Parameters
     ----------
-    DATASET :
+    DATASET : str
+        The input dataset.
         
 
     Returns
     -------
+    trainX : 
+    Training input data.
+`    trainY : 
+        Training target data.
+    valX : 
+        Validation input data.
+    valY : 
+        Validation target data.
+    train_orig : 
+        Original training data.
+    val_orig : 
+        Original validation data.
+    enc_seq_length : 
+        Length of the input sequence.
+    dec_seq_length : 
+        Length of the target sequence.
+    enc_vocab_size : 
+        Vocabulary size of the input sequence.
+    dec_vocab_size : 
+        Vocabulary size of the target sequence.
+    train_dataset : 
+        Training dataset.
+    val_dataset : 
+        Validation dataset.`
 
     """
     dataset = PrepareDataset()
@@ -90,13 +116,15 @@ def loss_fcn(target, prediction):
 
     Parameters
     ----------
-    target :
-        
-    prediction :
-        
+    target : 
+        Target data.
+    prediction : 
+        Model prediction.    
 
     Returns
     -------
+    loss : 
+        Computed loss value.
 
     """
     # Create mask so that the zero padding values are not included in the computation of loss
@@ -116,13 +144,15 @@ def accuracy_fcn(target, prediction):
 
     Parameters
     ----------
-    target :
-        
-    prediction :
-        
+    target : 
+        Target data.
+    prediction : 
+        Model prediction.    
 
     Returns
     -------
+    accuracy : 
+        Computed accuracy value.
 
     """
     # Create mask so that the zero padding values are not included in the computation of accuracy
@@ -160,15 +190,20 @@ def train_step(encoder_input, decoder_input, decoder_output):
 
     Parameters
     ----------
-    encoder_input :
+    encoder_input : Tensor
+        Input tensor for the encoder.
         
-    decoder_input :
+    decoder_input : Tensor
+        Input tensor for the decoder.
         
-    decoder_output :
+    decoder_output : Tensor
+        Expected output tensor for the decoder.
         
 
     Returns
     -------
+    None
+        The function updates the trainable variables of the model.
 
     """
     with GradientTape() as tape:

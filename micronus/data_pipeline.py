@@ -39,7 +39,7 @@ class PrepareDataset:
 
         Parameters
         ----------
-        dataset : 
+        dataset : str or file
             filename of dataset
             
 
@@ -59,7 +59,7 @@ class PrepareDataset:
         tokenizer : 
             tokenizer object
             
-        dataset :
+        dataset : str or file
             filename of dataset
             
 
@@ -79,7 +79,7 @@ class PrepareDataset:
 
         Parameters
         ----------
-        dataset :
+        dataset : str or file
             filename of dataset
             
         tokenizer :

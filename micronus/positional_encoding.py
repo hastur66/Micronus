@@ -8,7 +8,7 @@ from tensorflow.keras.layers.experimental.preprocessing import TextVectorization
 
 
 class PositionEmbeddingFixedWeights(Layer):
-    """ """
+    """ Initialize the PositionEmbeddingFixedWeights layer """
     def __init__(self, sequence_length, vocab_size, output_dim, **kwargs):
         super(PositionEmbeddingFixedWeights, self).__init__(**kwargs)
         word_embedding_matrix = self.get_position_encoding(vocab_size, output_dim)   
@@ -29,15 +29,19 @@ class PositionEmbeddingFixedWeights(Layer):
 
         Parameters
         ----------
-        seq_len :
+        seq_len : int
+            Length of the sequence.
             
-        d :
+        d : int
+            Dimensionality of the embedding.
             
-        n :
-             (Default value = 10000)
+        n : int, optional
+            Scaling factor for the encoding (Default value = 10000)
 
         Returns
         -------
+        output : np.ndarray
+            Position embedding matrix of shape (seq_len, d).
 
         """
         P = np.zeros((seq_len, d))
@@ -54,11 +58,13 @@ class PositionEmbeddingFixedWeights(Layer):
 
         Parameters
         ----------
-        inputs :
+        inputs : tf.Tensor
+            Input tensor of shape (batch_size, seq_len).
             
-
         Returns
         -------
+        output : tf.Tensor
+            Output tensor of shape (batch_size, seq_len, output_dim).
 
         """
         position_indices = tf.range(tf.shape(inputs)[-1])

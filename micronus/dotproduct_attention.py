@@ -3,13 +3,13 @@ from tensorflow.keras.layers import Layer
 from tensorflow.keras.backend import softmax
 
 class DotProductAttention(Layer):
-    """class for scaled dot product attention"""
+    """ class for scaled dot product attention """
 
     def __init__(self, **kwargs):
         super(DotProductAttention, self).__init__(**kwargs)
 
     def call(self, queries, keys, values, d_k, mask=None):
-        """method for scaled dot product attention
+        """ method for scaled dot product attention
 
         Parameters
         ----------
