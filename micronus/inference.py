@@ -2,7 +2,7 @@ from pickle import load
 from tensorflow import Module
 from tensorflow import convert_to_tensor, int64, TensorArray, argmax, newaxis, transpose
 from keras.preprocessing.sequence import pad_sequences
-from transformer_model import TransformerModel
+from micronus.transformer_model import TransformerModel
 
 # Define the model parameters
 h = 8  # Number of self-attention heads
