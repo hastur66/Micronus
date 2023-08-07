@@ -20,13 +20,16 @@ dec_vocab_size = 3858  # Decoder vocabulary size
 
 
 inferencing_model = TransformerModel(enc_vocab_size, dec_vocab_size, enc_seq_length, dec_seq_length, h, d_k, d_v, d_model, d_ff, n, 0)
-
+encoder_tokenizer = 'enc_tokenizer.pkl'
+decoder_tokenizer = 'dec_tokenizer.pkl'
 
 class Infer(Module):
     """ Class for performing inference """
-    def __init__(self, inferencing_model, **kwargs):
+    def __init__(self, inferencing_model, encoder_tokenizer, decoder_tokenizer, **kwargs):
         super(Infer, self).__init__(**kwargs)
         self.transformer = inferencing_model
+        self.enc_tokenizer = encoder_tokenizer
+        self.dec_tokenizer = decoder_tokenizer
  
     def load_tokenizer(self, name):
         """
@@ -51,8 +54,8 @@ class Infer(Module):
         sentence[0] = "<START> " + sentence[0] + " <EOS>"
  
         # Load encoder and decoder tokenizers
-        enc_tokenizer = self.load_tokenizer('enc_tokenizer.pkl')
-        dec_tokenizer = self.load_tokenizer('dec_tokenizer.pkl')
+        enc_tokenizer = self.load_tokenizer(self.enc_tokenizer)
+        dec_tokenizer = self.load_tokenizer(self.dec_tokenizer)
  
         # Prepare the input sentence by tokenizing, padding and converting to tensor
         encoder_input = enc_tokenizer.texts_to_sequences(sentence)
