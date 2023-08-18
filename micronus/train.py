@@ -9,27 +9,7 @@ from micronus.data_pipeline import PrepareDataset
 from time import time
 from pickle import dump
 import argparse
- 
-parser = argparse.ArgumentParser(description="micronus training parameters", 
-                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-parser.add_argument("--h", type=int, default=8, help="Number of self-attention heads")
-parser.add_argument("--d_k", type=int, default=64, help="Dimensionality of the linearly projected queries and keys")
-parser.add_argument("--d_v", type=int, default=64, help="Dimensionality of the linearly projected values")
-parser.add_argument("--d_model", type=int, default=512, help="Dimensionality of model layers' outputs")
-parser.add_argument("--d_ff", type=int, default=2048, help="Dimensionality of the inner fully connected layer")
-parser.add_argument("--n", type=int, default=6, help="Number of layers in the encoder stack")
-
-parser.add_argument("--epochs", type=int, default=20, help="Number of epochs to train for")
-parser.add_argument("--batch_size", type=int, default=64, help="Batch size")
-parser.add_argument("--beta_1", type=float, default=0.9, help="Adam optimizer beta 1")
-parser.add_argument("--beta_2", type=float, default=0.98, help="Adam optimizer beta 2")
-parser.add_argument("--epsilon", type=float, default=1e-9, help="Adam optimizer epsilon")
-parser.add_argument("--dropout_rate", type=float, default=0.1, help="Dropout rate")
-
-parser.add_argument("--dataset", type=str, default="english-german.pkl", help="Name of the dataset file")
-
-args = vars(parser.parse_args())
 # Define the model parameters
 # h = 8  # Number of self-attention heads
 # d_k = 64  # Dimensionality of the linearly projected queries and keys
@@ -44,25 +24,8 @@ args = vars(parser.parse_args())
 # beta_2 = 0.98
 # epsilon = 1e-9
 # dropout_rate = 0.1
-
-
-h = args["h"]
-d_k = args["d_k"]
-d_v = args["d_v"]
-d_model = args["d_model"]
-d_ff = args["d_ff"]
-n =  args["n"]
-
-# Define the training parameters
-epochs = args["epochs"]
-batch_size = args["batch_size"]
-beta_1 = args["beta_1"]
-beta_2 = args["beta_2"]
-epsilon = args["epsilon"]
-dropout_rate = args["dropout_rate"]
  
 # DATASET='english-german.pkl'
-DATASET = args["dataset"]
  
 # Implementing a learning rate scheduler
 class LRScheduler(LearningRateSchedule):
@@ -82,12 +45,9 @@ class LRScheduler(LearningRateSchedule):
  
         return (self.d_model ** -0.5) * math.minimum(arg1, arg2)
  
- 
-# Instantiate an Adam optimizer
-optimizer = Adam(LRScheduler(d_model), beta_1, beta_2, epsilon)
- 
+  
 # Prepare the training dataset
-def data_process(DATASET):
+def data_process(DATASET, batch_size):
     """
 
     Parameters
@@ -140,11 +100,6 @@ def data_process(DATASET):
 
     return trainX, trainY, valX, valY, train_orig, val_orig, enc_seq_length, dec_seq_length, enc_vocab_size, dec_vocab_size, train_dataset, val_dataset
 
-trainX, trainY, valX, valY, train_orig, val_orig, enc_seq_length, dec_seq_length, enc_vocab_size, dec_vocab_size, train_dataset, val_dataset = data_process(DATASET)
-
-# Create model
-training_model = TransformerModel(enc_vocab_size, dec_vocab_size, enc_seq_length, dec_seq_length, h, d_k, d_v, d_model, d_ff, n, dropout_rate)
- 
  
 # Defining the loss function
 def loss_fcn(target, prediction):
@@ -206,22 +161,9 @@ def accuracy_fcn(target, prediction):
     return reduce_sum(accuracy) / reduce_sum(padding_mask)
  
  
-# Include metrics monitoring
-train_loss = Mean(name='train_loss')
-train_accuracy = Mean(name='train_accuracy')
-val_loss = Mean(name='val_loss')
- 
-# Create a checkpoint object and manager to manage multiple checkpoints
-ckpt = train.Checkpoint(model=training_model, optimizer=optimizer)
-ckpt_manager = train.CheckpointManager(ckpt, "./checkpoints", max_to_keep=None)
- 
-# Initialise dictionaries to store the training and validation losses
-train_loss_dict = {}
-val_loss_dict = {}
- 
 # Speeding up the training process
 @function
-def train_step(encoder_input, decoder_input, decoder_output):
+def train_step(encoder_input, decoder_input, decoder_output, training_model, optimizer, train_loss, train_accuracy):
     """
 
     Parameters
@@ -262,21 +204,66 @@ def train_step(encoder_input, decoder_input, decoder_output):
     train_loss(loss)
     train_accuracy(accuracy)
  
-def run(epochs):
-    """
 
-    Parameters
-    ----------
-    epochs : int
-        Number of epochs to train the model.
-        
+def main():
+    parser = argparse.ArgumentParser(description="micronus training parameters", 
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+            
+    parser.add_argument("--h", type=int, default=8, help="Number of self-attention heads")
+    parser.add_argument("--d_k", type=int, default=64, help="Dimensionality of the linearly projected queries and keys")
+    parser.add_argument("--d_v", type=int, default=64, help="Dimensionality of the linearly projected values")
+    parser.add_argument("--d_model", type=int, default=512, help="Dimensionality of model layers' outputs")
+    parser.add_argument("--d_ff", type=int, default=2048, help="Dimensionality of the inner fully connected layer")
+    parser.add_argument("--n", type=int, default=6, help="Number of layers in the encoder stack")
 
-    Returns
-    -------
-    None
-        The function updates the trainable variables of the model.
+    parser.add_argument("--epochs", type=int, default=20, help="Number of epochs to train for")
+    parser.add_argument("--batch_size", type=int, default=64, help="Batch size")
+    parser.add_argument("--beta_1", type=float, default=0.9, help="Adam optimizer beta 1")
+    parser.add_argument("--beta_2", type=float, default=0.98, help="Adam optimizer beta 2")
+    parser.add_argument("--epsilon", type=float, default=1e-9, help="Adam optimizer epsilon")
+    parser.add_argument("--dropout_rate", type=float, default=0.1, help="Dropout rate")
 
-    """
+    parser.add_argument("--dataset", type=str, default="english-german.pkl", help="Name of the dataset file")
+
+    args = vars(parser.parse_args())
+    
+    h = args["h"]
+    d_k = args["d_k"]
+    d_v = args["d_v"]
+    d_model = args["d_model"]
+    d_ff = args["d_ff"]
+    n =  args["n"]
+
+    epochs = args["epochs"]
+    batch_size = args["batch_size"]
+    beta_1 = args["beta_1"]
+    beta_2 = args["beta_2"]
+    epsilon = args["epsilon"]
+    dropout_rate = args["dropout_rate"]
+    DATASET = args["dataset"]
+
+    # Instantiate an Adam optimizer
+    optimizer = Adam(LRScheduler(d_model), beta_1, beta_2, epsilon)
+
+
+    trainX, trainY, valX, valY, train_orig, val_orig, enc_seq_length, dec_seq_length, enc_vocab_size, dec_vocab_size, train_dataset, val_dataset = data_process(DATASET)
+
+    # Create model
+    training_model = TransformerModel(enc_vocab_size, dec_vocab_size, enc_seq_length, dec_seq_length, h, d_k, d_v, d_model, d_ff, n, dropout_rate)
+
+    # Include metrics monitoring
+    train_loss = Mean(name='train_loss')
+    train_accuracy = Mean(name='train_accuracy')
+    val_loss = Mean(name='val_loss')
+    
+    # Create a checkpoint object and manager to manage multiple checkpoints
+    ckpt = train.Checkpoint(model=training_model, optimizer=optimizer)
+    ckpt_manager = train.CheckpointManager(ckpt, "./checkpoints", max_to_keep=None)
+    
+    # Initialise dictionaries to store the training and validation losses
+    train_loss_dict = {}
+    val_loss_dict = {}
+
     for epoch in range(epochs):
     
         train_loss.reset_states()
@@ -295,7 +282,7 @@ def run(epochs):
             decoder_input = train_batchY[:, :-1]
             decoder_output = train_batchY[:, 1:]
     
-            train_step(encoder_input, decoder_input, decoder_output)
+            train_step(encoder_input, decoder_input, decoder_output, training_model, optimizer, train_loss, train_accuracy)
     
             if step % 50 == 0:
                 print(f'Epoch {epoch + 1} Step {step} Loss {train_loss.result():.4f} Accuracy {train_accuracy.result():.4f}')
@@ -341,4 +328,4 @@ def run(epochs):
     print("Total time taken: %.2fs" % (time() - start_time))
 
 if __name__ == '__main__':
-    run(epochs=epochs)
+    main()
