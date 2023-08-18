@@ -1,27 +1,62 @@
 from pickle import load
+import argparse
+
 from tensorflow import Module
 from tensorflow import convert_to_tensor, int64, TensorArray, argmax, newaxis, transpose
 from keras.preprocessing.sequence import pad_sequences
 from micronus.transformer_model import TransformerModel
 
-# Define the model parameters
-h = 8  # Number of self-attention heads
-d_k = 64  # Dimensionality of the linearly projected queries and keys
-d_v = 64  # Dimensionality of the linearly projected values
-d_model = 512  # Dimensionality of model layers' outputs
-d_ff = 2048  # Dimensionality of the inner fully connected layer
-n = 6  # Number of layers in the encoder stack
- 
-# Define the dataset parameters
-enc_seq_length = 7  # Encoder sequence length
-dec_seq_length = 12  # Decoder sequence length
-enc_vocab_size = 2405  # Encoder vocabulary size
-dec_vocab_size = 3858  # Decoder vocabulary size
+parser = argparse.ArgumentParser(description="micronus inference parameters",
+                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
+parser.add_argument("--h", type=int, default=8, help="Number of self-attention heads")
+parser.add_argument("--d_k" , type=int, default=64, help="Dimensionality of the linearly projected queries and keys")
+parser.add_argument("--d_v", type=int, default=64, help="Dimensionality of the linearly projected values")
+parser.add_argument("--d_model", type=int, default=512, help="Dimensionality of model layers' outputs")
+parser.add_argument("--d_ff", type=int, default=2048, help="Dimensionality of the inner fully connected layer")
+parser.add_argument("--n", type=int, default=6, help="Number of layers in the encoder stack")
+
+parser.add_argument("--enc_seq_length", type=int, default=7, help="Encoder sequence length")
+parser.add_argument("--dec_seq_length", type=int, default=12, help="Decoder sequence length")
+parser.add_argument("--enc_vocab_size", type=int, default=2405, help="Encoder vocabulary size")
+parser.add_argument("--dec_vocab_size", type=int, default=3858, help="Decoder vocabulary size")
+
+parser.add_argument("--encoder_tokenizer", type=str, default='enc_tokenizer.pkl', help="Encoder tokenizer")
+parser.add_argument("--decoder_tokenizer", type=str, default='dec_tokenizer.pkl', help="Decoder tokenizer")
+
+args = vars(parser.parse_args())
+
+# Define the model parameters
+# h = 8  # Number of self-attention heads
+# d_k = 64  # Dimensionality of the linearly projected queries and keys
+# d_v = 64  # Dimensionality of the linearly projected values
+# d_model = 512  # Dimensionality of model layers' outputs
+# d_ff = 2048  # Dimensionality of the inner fully connected layer
+# n = 6  # Number of layers in the encoder stack
+ 
+# # Define the dataset parameters
+# enc_seq_length = 7  # Encoder sequence length
+# dec_seq_length = 12  # Decoder sequence length
+# enc_vocab_size = 2405  # Encoder vocabulary size
+# dec_vocab_size = 3858  # Decoder vocabulary size
+
+h = args["h"]  
+d_k = args["d_k"]
+d_v = args["d_v"]
+d_model = args["d_model"]
+d_ff = args["d_ff"]
+n =  args["n"]
+
+enc_seq_length = args["enc_seq_length"]
+dec_seq_length = args["dec_seq_length"]
+enc_vocab_size = args["enc_vocab_size"]
+dec_vocab_size = args["dec_vocab_size"]
 
 inferencing_model = TransformerModel(enc_vocab_size, dec_vocab_size, enc_seq_length, dec_seq_length, h, d_k, d_v, d_model, d_ff, n, 0)
-encoder_tokenizer = 'enc_tokenizer.pkl'
-decoder_tokenizer = 'dec_tokenizer.pkl'
+# encoder_tokenizer = 'enc_tokenizer.pkl'
+# decoder_tokenizer = 'dec_tokenizer.pkl'
+encoder_tokenizer = args["encoder_tokenizer"]
+decoder_tokenizer = args["decoder_tokenizer"]
 
 class Infer(Module):
     """ Class for performing inference """
