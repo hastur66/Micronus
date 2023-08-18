@@ -3,7 +3,7 @@ import numpy as np
 from micronus.transformer_model import TransformerModel
 from micronus.inference import Infer
 
-inferencing_model = TransformerModel()
+# inferencing_model = TransformerModel()
 
 # Sentence to translate
 sentence = ['im thirsty']
@@ -40,4 +40,4 @@ class TestInfer():
 
         # Translate the input sentence
         # print(translator(sentence))
-        print(sentence)
+        assert sentence == ['im thirsty']
