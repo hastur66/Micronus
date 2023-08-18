@@ -1,0 +1,30 @@
+[build-system]
+requires      = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "micronus"
+version = "0.0.2"
+description = "A light weight transformer model"
+readme = "README.md"
+authors = [{ name = "Chamath Attanyaka", email = "kaushalyabandaraatta@gmail.com" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["light", "transformer", "tutorial"]
+dependencies = [
+    "tensorflow==2.4.1",
+    "keras==2.4.3",
+    "numpy==1.19.3",
+    "matplotlib>=3.3.2",
+]
+requires-python = ">=3.8"
+
+[project.optional-dependencies]
+dev = ["pip-tools", "pytest"]
+
+[project.urls]
+Homepage = "https://github.com/hastur66/Micronus"

@@ -4,7 +4,7 @@ from setuptools import find_packages
 setup(
       author='Chamath Attanyaka',
       name='micronus',
-      version='0.0.1',
+      version='0.0.2',
       description='A light weight transformer model',
       packages=find_packages(include=['micronus', 'micronus.*']),
       install_requires=[
