@@ -6,6 +6,8 @@ from keras.preprocessing.sequence import pad_sequences
 from tensorflow import convert_to_tensor, int64
  
 class PrepareDataset:
+    """ Prepares the dataset for training and testing """
+    
     def __init__(self, **kwargs):
         super(PrepareDataset, self).__init__(**kwargs)
         self.n_sentences = 15000  # Number of sentences to include in the dataset
@@ -14,21 +16,84 @@ class PrepareDataset:
  
     # Fit a tokenizer
     def create_tokenizer(self, dataset):
+        """
+
+        Parameters
+        ----------
+        dataset : str or file
+            filename of dataset
+            
+        Returns
+        -------
+        output : 
+            tokenized dataset
+
+        """
         tokenizer = Tokenizer()
         tokenizer.fit_on_texts(dataset)
  
         return tokenizer
  
     def find_seq_length(self, dataset):
+        """
+
+        Parameters
+        ----------
+        dataset : str or file
+            filename of dataset
+            
+
+        Returns
+        -------
+        output : 
+            maximum sequence length in dataset
+
+        """
         return max(len(seq.split()) for seq in dataset)
  
     def find_vocab_size(self, tokenizer, dataset):
+        """
+
+        Parameters
+        ----------
+        tokenizer : 
+            tokenizer object
+            
+        dataset : str or file
+            filename of dataset
+            
+
+        Returns
+        -------
+        output : 
+            vocabulary size
+
+        """
         tokenizer.fit_on_texts(dataset)
  
         return len(tokenizer.word_index) + 1
  
     # Encode and pad the input sequences
     def encode_pad(self, dataset, tokenizer, seq_length):
+        """
+
+        Parameters
+        ----------
+        dataset : str or file
+            filename of dataset
+            
+        tokenizer :
+            tokenizer object
+        
+        seq_length :
+            maximum sequence length in dataset
+
+        Returns
+        -------
+        output : 
+            encoded and padded dataset
+
+        """
         x = tokenizer.texts_to_sequences(dataset)
         x = pad_sequences(x, maxlen=seq_length, padding='post')
         x = convert_to_tensor(x, dtype=int64)
@@ -36,6 +101,22 @@ class PrepareDataset:
         return x
  
     def save_tokenizer(self, tokenizer, name):
+        """
+
+        Parameters
+        ----------
+        tokenizer :
+            tokenizer object
+            
+        name :
+            tokenizer name
+
+        Returns
+        -------
+        output : 
+            save tokenizer object to file
+
+        """
         with open(name + '_tokenizer.pkl', 'wb') as handle:
             dump(tokenizer, handle, protocol=HIGHEST_PROTOCOL)
  

@@ -4,3 +4,5 @@ __pycache__/
 dist/
 build/
 micronus.egg-info/
+
+notebooks/.ipynb_checkpoints/
