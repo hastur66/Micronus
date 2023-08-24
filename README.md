@@ -8,3 +8,9 @@ A light-weight transformer model.
 ```
 pip install micronus
 ```
+
+#### Train
+exampel
+```
+python -m micronus.train --dataset data/english-german-both.pkl 
+```
