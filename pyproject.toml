@@ -28,3 +28,6 @@ dev = ["pip-tools", "pytest"]
 
 [project.urls]
 Homepage = "https://github.com/hastur66/Micronus"
+
+[project.scripts]
+micronus - "micronus.__main__:main"
