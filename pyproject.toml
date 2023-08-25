@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "micronus"
-version = "0.0.2"
+version = "0.0.3"
 description = "A light weight transformer model"
 readme = "README.md"
 authors = [{ name = "Chamath Attanyaka", email = "kaushalyabandaraatta@gmail.com" }]
@@ -30,4 +30,4 @@ dev = ["pip-tools", "pytest"]
 Homepage = "https://github.com/hastur66/Micronus"
 
 [project.scripts]
-micronus - "micronus.__main__:main"
+micronus = "micronus.__main__:main"
