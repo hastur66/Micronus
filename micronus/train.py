@@ -246,7 +246,7 @@ def main():
     optimizer = Adam(LRScheduler(d_model), beta_1, beta_2, epsilon)
 
 
-    trainX, trainY, valX, valY, train_orig, val_orig, enc_seq_length, dec_seq_length, enc_vocab_size, dec_vocab_size, train_dataset, val_dataset = data_process(DATASET)
+    trainX, trainY, valX, valY, train_orig, val_orig, enc_seq_length, dec_seq_length, enc_vocab_size, dec_vocab_size, train_dataset, val_dataset = data_process(DATASET, batch_size)
 
     # Create model
     training_model = TransformerModel(enc_vocab_size, dec_vocab_size, enc_seq_length, dec_seq_length, h, d_k, d_v, d_model, d_ff, n, dropout_rate)
