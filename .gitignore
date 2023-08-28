@@ -8,3 +8,8 @@ micronus.egg-info/
 notebooks/.ipynb_checkpoints/
 
 *.env
+checkpoints/
+
+weights/
+
+test_dataset.txt

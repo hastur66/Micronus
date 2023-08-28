@@ -154,3 +154,6 @@ def main():
     output = infer(sentence, enc_seq_length, dec_seq_length)
     
     print("Generated Output:", " ".join(output))
+
+if __name__ == "__main__":
+    main()
