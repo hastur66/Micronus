@@ -14,3 +14,9 @@ exampel
 ```
 python -m micronus.train --dataset data/english-german-both.pkl 
 ```
+
+#### Inference
+example
+```
+python -m micronus.inference --sentence "Hello world!"
+```
